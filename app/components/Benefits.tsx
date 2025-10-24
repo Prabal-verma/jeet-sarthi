@@ -11,7 +11,7 @@ export default function Benefits() {
               {/* Blue circle background */}
               <div className="absolute inset-0 bg-[#0B63C5] rounded-full"></div>
               {/* Girl image - larger and positioned to avoid cropping */}
-              <div className="absolute -top-16 -bottom-16 -left-8 -right-8">
+              <div className="absolute -top-24 -bottom-24 -left-16 -right-16">
                 <Image
                   src="/girl.webp"
                   alt="Student with laptop"
@@ -64,7 +64,7 @@ export default function Benefits() {
             </div>
 
             {/* CTA Button */}
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-start mt-8">
               <button
                 type="button"
                 className="px-12 py-4 bg-[#0B63C5] text-white text-lg font-semibold rounded-xl shadow-md hover:bg-[#38B148] transition-colors duration-300"
@@ -87,8 +87,8 @@ type BenefitProps = {
 
 function Benefit({ iconSrc, title, description }: BenefitProps) {
   return (
-    <div className="text-center">
-      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#E7F1FF] border border-[#38B148]/20 flex items-center justify-center">
+    <div className="text-left">
+      <div className="w-16 h-16 mb-4 rounded-full bg-[#E7F1FF] border border-[#38B148]/20 flex items-center justify-center">
         <img src={iconSrc} className="w-8 h-8" alt="icon" />
       </div>
       <h3 className="text-[#0B0B0B] text-lg font-bold mb-2">{title}</h3>

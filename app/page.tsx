@@ -12,7 +12,6 @@ export default function Home() {
     <div>
       <Banner />
       <Hero />
-      <ContactForm />
       <WhyChoose />
       <Experience />
       <HowItWorks />

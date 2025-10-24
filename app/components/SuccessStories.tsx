@@ -40,7 +40,7 @@ export default function SuccessStories() {
     }
   ];
 
-  // Static cards layout to match design (no arrows/slide)
+  // Scrollable carousel - 3 cards visible on desktop
 
   return (
     <section className="w-full bg-white py-16">
@@ -50,32 +50,31 @@ export default function SuccessStories() {
           <span className="text-[#2170B4]">Success</span> <span className="text-[#66B34B]">Stories</span>
         </h2>
 
-        {/* Cards - 3 across like the design */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="px-4">
-              <div className="bg-[#F1FAF0] rounded-xl p-8 shadow-md">
-                {/* Quote Icon centered */}
-                <div className="text-[#2170B4] text-6xl font-bold mb-4 text-center">"</div>
-                {/* Testimonial Text */}
-                <p className="text-gray-700 text-base leading-relaxed text-center">
-                  {testimonial.text}
-                </p>
-              </div>
-              {/* Name */}
-              <div className="text-center mt-6">
-                <h3 className="text-[#2170B4] text-xl font-bold">{testimonial.name}</h3>
-              </div>
+        {/* Scrollable carousel - 3 cards visible on desktop, same card size */}
+        <div className="relative">
+          <div className="overflow-x-auto no-scrollbar">
+            <div className="flex gap-0 snap-x snap-mandatory">
+              {testimonials.map((testimonial, index) => (
+                <div key={index} className="flex-none w-full md:w-1/3 snap-start">
+                  <div className="bg-[#F1FAF0] rounded-xl p-8 shadow-md h-[460px] flex flex-col mx-2">
+                    {/* Quote Icon centered */}
+                    <div className="text-[#2170B4] text-6xl font-bold mb-4 text-center">"</div>
+                    {/* Testimonial Text */}
+                    <p className="text-gray-700 text-sm leading-relaxed text-center">
+                      {testimonial.text}
+                    </p>
+                  </div>
+                  {/* Name */}
+                  <div className="text-center mt-6">
+                    <h3 className="text-[#2170B4] text-xl font-bold">{testimonial.name}</h3>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* Dots - left aligned to match screenshot */}
-        <div className="flex justify-start mt-8 space-x-2">
-          <span className="w-3 h-3 rounded-full bg-[#66B34B]" />
-          <span className="w-3 h-3 rounded-full bg-gray-300" />
-          <span className="w-3 h-3 rounded-full bg-gray-300" />
-        </div>
+        {/* Dots removed for scrollable carousel */}
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import WhyChoose from './components/WhyChoose';
 import Experience from './components/Experience';
 import HowItWorks from './components/HowItWorks';
 import Benefits from './components/Benefits';
+import SuccessStories from './components/SuccessStories';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Experience />
       <HowItWorks />
       <Benefits />
+      <SuccessStories />
     </div>
   );
 }

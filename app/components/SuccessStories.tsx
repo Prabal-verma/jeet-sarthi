@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function SuccessStories() {
-  const [currentSlide, setCurrentSlide] = useState(0); // kept for potential future auto-rotate
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(1);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const testimonials = [
     {
@@ -40,7 +42,62 @@ export default function SuccessStories() {
     }
   ];
 
-  // Scrollable carousel - 3 cards visible on desktop
+  // Detect items per view based on breakpoint (md: 3 cards, otherwise 1)
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+
+    const updateItemsPerView = () => {
+      setItemsPerView(mediaQuery.matches ? 3 : 1);
+    };
+
+    updateItemsPerView();
+    mediaQuery.addEventListener('change', updateItemsPerView);
+    return () => mediaQuery.removeEventListener('change', updateItemsPerView);
+  }, []);
+
+  // Track scroll position to update current page index
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const onScroll = () => {
+      const width = container.clientWidth;
+      if (width === 0) return;
+      const pageIndex = Math.round(container.scrollLeft / width);
+      setCurrentSlide(pageIndex);
+    };
+
+    container.addEventListener('scroll', onScroll, { passive: true });
+    return () => container.removeEventListener('scroll', onScroll);
+  }, [itemsPerView]);
+
+  // Allow mouse wheel (vertical scroll) to translate into horizontal scrolling on desktop
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const onWheel = (event: WheelEvent) => {
+      // If the user scrolls vertically, move horizontally instead
+      const isVerticalScrollDominant = Math.abs(event.deltaY) > Math.abs(event.deltaX);
+      if (isVerticalScrollDominant && container.scrollWidth > container.clientWidth) {
+        event.preventDefault();
+        container.scrollLeft += event.deltaY;
+      }
+    };
+
+    container.addEventListener('wheel', onWheel, { passive: false });
+    return () => container.removeEventListener('wheel', onWheel as EventListener);
+  }, []);
+
+  const totalPages = Math.ceil(testimonials.length / itemsPerView);
+
+  const handleDotClick = (index: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const targetLeft = index * container.clientWidth;
+    container.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    setCurrentSlide(index);
+  };
 
   return (
     <section className="w-full bg-white py-16">
@@ -52,8 +109,8 @@ export default function SuccessStories() {
 
         {/* Scrollable carousel - 3 cards visible on desktop, same card size */}
         <div className="relative">
-          <div className="overflow-x-auto no-scrollbar">
-            <div className="flex gap-0 snap-x snap-mandatory">
+          <div ref={scrollContainerRef} className="overflow-x-auto no-scrollbar snap-x snap-mandatory">
+            <div className="flex gap-0">
               {testimonials.map((testimonial, index) => (
                 <div key={index} className="flex-none w-full md:w-1/3 snap-start">
                   <div className="bg-[#F1FAF0] rounded-xl p-8 shadow-md h-[460px] flex flex-col mx-2">
@@ -66,7 +123,7 @@ export default function SuccessStories() {
                   </div>
                   {/* Name */}
                   <div className="text-center mt-6">
-                    <h3 className="text-[#2170B4] text-xl font-bold">{testimonial.name}</h3>
+                    <h3 className="text-[#0B2A59] text-xl font-extrabold">{testimonial.name}</h3>
                   </div>
                 </div>
               ))}
@@ -74,7 +131,22 @@ export default function SuccessStories() {
           </div>
         </div>
 
-        {/* Dots removed for scrollable carousel */}
+        {/* Pagination dots */}
+        <div className="mt-6 flex items-center justify-center gap-2" aria-label="carousel pagination">
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => handleDotClick(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={
+                `h-2 w-2 rounded-full transition-colors ${
+                  currentSlide === index ? 'bg-[#2170B4]' : 'bg-gray-300'
+                }`
+              }
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
